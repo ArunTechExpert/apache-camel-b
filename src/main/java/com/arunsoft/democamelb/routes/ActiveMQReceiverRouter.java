@@ -9,22 +9,28 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-//@Component
+@Component
 public class ActiveMQReceiverRouter extends RouteBuilder {
     @Autowired
     private MyCurrencyExchangeTransformer  myCurrencyExchangeTransformer;
 
     @Override
     public void configure() throws Exception {
-        from("activemq:my-activemq-queue")
-                .log("${body}")
-                .unmarshal().json(JsonLibrary.Jackson,CurrencyExchange.class)
-                .bean(myCurrencyExchangeTransformer, "processMessage")
-                .to("log:received-message-from-active-mq");
+//        from("activemq:my-activemq-queue")
+//                .log("${body}")
+//                .unmarshal().json(JsonLibrary.Jackson,CurrencyExchange.class)
+//                .bean(myCurrencyExchangeTransformer, "processMessage")
+//                .to("log:received-message-from-active-mq");
+//        
+        from("activemq:split-queue")
+        .log("${body}")
+        .to("log:received-message-from-active-mq");
+        
+        
     }
 }
 
-//@Component
+@Component
 class MyCurrencyExchangeTransformer{
     Logger logger = LoggerFactory.getLogger(MyCurrencyExchangeTransformer.class);
 
